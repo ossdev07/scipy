@@ -242,7 +242,14 @@ before_install:
     if [ "${ASV_CHECK}" == "1" ]; then
         travis_retry pip install "asv>=0.4.1"
     fi
-
+   - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]
+        pip uninstall -y nose
+        ccache -s
+    fi
+  - cd ..
+  - set -o pipefail
+  
+  
   - tools/validate_runtests_log.py $TESTMODE < runtests.log
   - if [ "${REFGUIDE_CHECK}" == "1" ]; then python runtests.py -g --refguide-check; fi
   - if [ "${ASV_CHECK}" == "1" ]; then (cd benchmarks && python -masv check -E existing); fi

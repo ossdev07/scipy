@@ -265,6 +265,31 @@ script:
   - if [ "$NPY_RELAXED_STRIDES_CHECKING" == "1" ]; then python -c'import numpy as np; assert np.ones((10,1),order="C").flags.f_contiguous'; fi
   # Test that mpmath actually uses gmpy2
   - if [[ "$TRAVIS_OS_NAME" == "linux" -a "${TRAVIS_CPU_ARCH}" == "amd64" ]]; then python -c 'import mpmath.libmp; assert mpmath.libmp.BACKEND == "gmpy"'; fi
+  - |
+    if [ "${USE_WHEEL}" == "1" -a "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
+        # Run setup.py build before pip wheel, to build in current directory
+        # and make more efficient use of ccache
+        echo "setup.py build"
+        python tools/suppress_output.py python setup.py build
+        echo "pip wheel"
+        python tools/suppress_output.py pip wheel --no-build-isolation .
+        pip install --no-cache-dir scipy*.whl
+        USE_WHEEL_BUILD="--no-build"
+    elif [ "${USE_SDIST}" == "1" -a "${TRAVIS_CPU_ARCH}" == "amd64"  ]; then
+        echo "setup.py sdist"
+        python tools/suppress_output.py python setup.py sdist
+        # Move out of source directory to avoid finding local scipy
+        cd dist
+        echo "pip install"
+        # Note: uses build isolation, which is what pip does with sdists by default
+        # Note: don't use a fixed build dir (which would help for ccache), because
+        #       --build is partially broken and the workaround in commit b4617dd764
+        #       messes with build isolation.
+        pip install $PWD/scipy* -v
+        cd ..
+        USE_WHEEL_BUILD="--no-build"
+    fi
+  
   
   - tools/validate_runtests_log.py $TESTMODE < runtests.log
   - if [ "${REFGUIDE_CHECK}" == "1" ]; then python runtests.py -g --refguide-check; fi

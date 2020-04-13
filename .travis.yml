@@ -133,7 +133,7 @@ cache:
 before_install:
   - echo $TRAVIS_OS_NAME
   - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    if [[ "$TRAVIS_OS_NAME" == "linux" -a "${TRAVIS_CPU_ARCH}" == "amd64"  ]]; then
       free -m
       export PATH=/usr/lib/ccache:$PATH
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then

@@ -230,7 +230,18 @@ before_install:
         travis_retry pip install numba==0.47
         travis_retry pip install --only-binary=:all: sparse
     fi
-
+  - |
+    if [ "${TESTMODE}" == "full" -a "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
+        travis_retry pip install pytest-cov coverage matplotlib scikit-umfpack scikit-sparse
+    fi
+  - |
+    if [ "${REFGUIDE_CHECK}" == "1" ]; then
+        travis_retry pip install matplotlib Sphinx==1.7.2
+    fi
+  - |
+    if [ "${ASV_CHECK}" == "1" ]; then
+        travis_retry pip install "asv>=0.4.1"
+    fi
 
   - tools/validate_runtests_log.py $TESTMODE < runtests.log
   - if [ "${REFGUIDE_CHECK}" == "1" ]; then python runtests.py -g --refguide-check; fi

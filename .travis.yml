@@ -133,10 +133,10 @@ cache:
 before_install:
   - echo $TRAVIS_OS_NAME
   - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" && "${TRAVIS_CPU_ARCH}" == "amd64"]]; then
+    if [[ "$TRAVIS_OS_NAME" == "linux" && "${TRAVIS_CPU_ARCH}" == "amd64"]] then
       free -m
       export PATH=/usr/lib/ccache:$PATH
-    elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    elif [[ "$TRAVIS_OS_NAME" == "osx" ]] then
       brew cask uninstall oclint
       brew install ccache libmpc gcc@6
       # The openblas binary used here was built using a gfortran older than 7,

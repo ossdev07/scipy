@@ -199,7 +199,8 @@ before_install:
     fi
   - python -V -V
   - python -c 'import sys; print("Python debug build:", hasattr(sys, "gettotalrefcount"))'
-  - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
+  - |
+    if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
         travis_retry pip install --upgrade pip setuptools wheel
         travis_retry pip install cython
     fi

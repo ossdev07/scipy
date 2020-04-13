@@ -22,7 +22,6 @@ env:
 matrix:
   include:
     - python: 3.6
-      if: type = pull_request
       env:
         - PYFLAKES=1
         - PEP8=1
@@ -47,7 +46,6 @@ matrix:
         # specify in pyproject.toml (will be older than --pre --upgrade) works
         - USE_SDIST=1
     - python: 3.7
-      if: type = pull_request
       env:
         - TESTMODE=fast
         - COVERAGE=
@@ -66,7 +64,6 @@ matrix:
     # However travis only specifies regular or development builds of Python
     # so we must install python3.6-dbg using apt.
     - python: 3.7
-      if: type = pull_request
       env:
         - TESTMODE=full
         - COVERAGE="--coverage --gcov"
@@ -75,7 +72,6 @@ matrix:
     # However travis only specifies regular or development builds of Python
     # so we must install python3.6-dbg using apt.
     - language: generic
-      if: type = pull_request
       dist: bionic
       env:
         - USE_DEBUG=python3.6-dbg
@@ -88,12 +84,10 @@ matrix:
             - python3.6-dbg
             - python3.6-dev
     - python: 3.8
-      if: type = pull_request
       env:
         - TESTMODE=full
         - NUMPYSPEC="--pre --upgrade --timeout=60 -f $PRE_WHEELS numpy"
     - python: 3.6
-      if: type = pull_request
       env:
         - TESTMODE=fast
         - COVERAGE=
@@ -102,14 +96,12 @@ matrix:
         - NUMPYSPEC="--upgrade numpy"
         - ASV_CHECK=1
     - python: 3.6
-      if: type = pull_request
       env:
         - TESTMODE=fast
         - COVERAGE=
         - NUMPYSPEC="numpy==1.17.4"
         - USE_SDIST=1
     - python: 3.6
-      if: type = pull_request
       env:
         - TESTMODE=fast
         - COVERAGE=
@@ -120,7 +112,6 @@ matrix:
         # flag. This environment variable starts all Py instances in -OO mode.
         - PYTHONOPTIMIZE=2
     - os: osx
-      if: type = pull_request
       language: generic
       env:
         - TESTMODE=fast
@@ -128,7 +119,6 @@ matrix:
         - NUMPYSPEC="--upgrade numpy"
         - MB_PYTHON_VERSION=3.7
     - python: 3.6
-      if: type = pull_request
       os: linux
       arch: ppc64le
       env:

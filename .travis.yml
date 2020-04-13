@@ -259,7 +259,12 @@ before_install:
       conda info -a;
       conda install pytest pytest-xdist scipy mpmath Cython pybind11 coverage;
     fi
-  
+script:
+  - python -c 'import numpy as np; print("relaxed strides checking:", np.ones((10,1),order="C").flags.f_contiguous)'
+  # Make sure that relaxed strides checking is actually in effect; otherwise fail loudly
+  - if [ "$NPY_RELAXED_STRIDES_CHECKING" == "1" ]; then python -c'import numpy as np; assert np.ones((10,1),order="C").flags.f_contiguous'; fi
+  # Test that mpmath actually uses gmpy2
+  - if [[ "$TRAVIS_OS_NAME" == "linux" -a "${TRAVIS_CPU_ARCH}" == "amd64" ]]; then python -c 'import mpmath.libmp; assert mpmath.libmp.BACKEND == "gmpy"'; fi
   
   - tools/validate_runtests_log.py $TESTMODE < runtests.log
   - if [ "${REFGUIDE_CHECK}" == "1" ]; then python runtests.py -g --refguide-check; fi

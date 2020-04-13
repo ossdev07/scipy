@@ -248,6 +248,17 @@ before_install:
     fi
   - cd ..
   - set -o pipefail
+  - if [[ "${TRAVIS_CPU_ARCH}" == "arm64" ]]; then
+      wget -q "https://github.com/conda-forge/miniforge/releases/download/4.8.2-1/Miniforge3-4.8.2-1-Linux-aarch64.sh"  -O miniconda.sh;
+      chmod +x miniconda.sh;
+      ./miniconda.sh -b -p $HOME/miniconda3;
+      export PATH=$HOME/miniconda3/bin:$PATH;
+      conda config --set always_yes yes --set auto_update_conda false;
+      conda install pip conda;
+      conda update -n base conda;
+      conda info -a;
+      conda install pytest pytest-xdist scipy mpmath Cython pybind11 coverage;
+    fi
   
   
   - tools/validate_runtests_log.py $TESTMODE < runtests.log

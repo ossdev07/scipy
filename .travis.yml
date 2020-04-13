@@ -205,8 +205,9 @@ before_install:
         travis_retry pip install cython
     fi
   - if [ -n "$NUMPYSPEC" -a "${TRAVIS_CPU_ARCH}" == "amd64"]; then travis_retry pip install $NUMPYSPEC; fi
-  - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
-        travis_retry pip install --upgrade pytest pytest-xdist mpmath argparse Pillow codecov;
+  - |
+    if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
+        travis_retry pip install --upgrade pytest pytest-xdist mpmath argparse Pillow codecov
     fi
   - |
     if [ -n "${USE_DEBUG}" ]; then
@@ -232,7 +233,8 @@ before_install:
     if [ "${ASV_CHECK}" == "1" ]; then
         travis_retry pip install "asv>=0.4.1"
     fi
-  - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]
+  - |
+    if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
          pip uninstall -y nose
          ccache -s
     fi
@@ -279,7 +281,8 @@ script:
         cd ..
         USE_WHEEL_BUILD="--no-build"
     fi
-  - if [[ "$TRAVIS_CPU_ARCH" == "amd64" ]]; then
+  - |
+    if [[ "$TRAVIS_CPU_ARCH" == "amd64" ]]; then
       export SCIPY_AVAILABLE_MEM=3G
       python -u runtests.py -g -m $TESTMODE $COVERAGE $USE_WHEEL_BUILD -- -rfEX -n 3 2>&1 | tee runtests.log
     elif [[ "$TRAVIS_CPU_ARCH" == "arm64" ]]; then

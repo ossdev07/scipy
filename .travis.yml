@@ -206,7 +206,7 @@ before_install:
     fi
   - if [ -n "$NUMPYSPEC" -a "${TRAVIS_CPU_ARCH}" == "amd64"]; then travis_retry pip install $NUMPYSPEC; fi
   - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
-        travis_retry pip install --upgrade pytest pytest-xdist mpmath argparse Pillow codecov
+        travis_retry pip install --upgrade pytest pytest-xdist mpmath argparse Pillow codecov;
     fi
   - |
     if [ -n "${USE_DEBUG}" ]; then

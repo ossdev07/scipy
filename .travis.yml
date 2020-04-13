@@ -243,9 +243,9 @@ before_install:
         travis_retry pip install "asv>=0.4.1"
     fi
    - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]
-        pip uninstall -y nose
-        ccache -s
-    fi
+         pip uninstall -y nose
+         ccache -s
+     fi
   - cd ..
   - set -o pipefail
   

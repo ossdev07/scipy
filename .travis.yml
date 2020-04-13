@@ -224,8 +224,8 @@ before_install:
         travis_retry pip install pytest==5.0.1
     fi
   - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]
-        travis_retry pip install gmpy2  # speeds up mpmath (scipy.special tests)
-        travis_retry pip install pybind11
+         travis_retry pip install gmpy2  # speeds up mpmath (scipy.special tests)
+         travis_retry pip install pybind11
     fi
   - |
     if [ -z "${USE_DEBUG}" -a "${TRAVIS_CPU_ARCH}" == "amd64" -a "${TRAVIS_PYTHON_VERSION}" != "3.8" ]; then

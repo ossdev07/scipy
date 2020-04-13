@@ -133,7 +133,7 @@ cache:
 before_install:
   - echo $TRAVIS_OS_NAME
   - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" && "${TRAVIS_CPU_ARCH}" == "amd64"]]; then
+    if [[ "$TRAVIS_OS_NAME" == "linux" && "${TRAVIS_CPU_ARCH}" == "amd64"]] then
       free -m
       export PATH=/usr/lib/ccache:$PATH
     else [[ "$TRAVIS_OS_NAME" == "osx" ]] then
@@ -182,7 +182,7 @@ before_install:
       echo "runtime_library_dirs = $TRAVIS_BUILD_DIR/openblas/usr/local/lib" >> site.cfg
       # remove a spurious gcc/gfortran toolchain install
       rm -rf /usr/local/Cellar/gcc/9.2.0_2
-    fi
+    fi;
   - export CCACHE_COMPRESS=1
   - python --version # just to check
   - export NPY_NUM_BUILD_JOBS=2

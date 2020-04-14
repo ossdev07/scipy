@@ -199,12 +199,12 @@ before_install:
     fi
   - python -V -V
   - python -c 'import sys; print("Python debug build:", hasattr(sys, "gettotalrefcount"))'
-  - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]
+  - if [ "${TRAVIS_CPU_ARCH}" != "arm64" ]
         travis_retry pip install --upgrade pip setuptools wheel
         travis_retry pip install cython
     fi
-  - if [ -n "$NUMPYSPEC" -a "${TRAVIS_CPU_ARCH}" == "amd64"]; then travis_retry pip install $NUMPYSPEC; fi
-  - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ] 
+  - if [ -n "$NUMPYSPEC" -a "${TRAVIS_CPU_ARCH}" != "arm64"]; then travis_retry pip install $NUMPYSPEC; fi
+  - if [ "${TRAVIS_CPU_ARCH}" != "arm64" ] 
         travis_retry pip install --upgrade pytest pytest-xdist mpmath argparse Pillow codecov
     fi
   - |
@@ -213,14 +213,14 @@ before_install:
         # Python 3.6
         travis_retry pip install pytest==5.0.1
     fi
-  - if [ -n "${TRAVIS_CPU_ARCH}" == "amd64" ]; then travis_retry pip install gmpy2 pybind11; fi
+  - if [ -n "${TRAVIS_CPU_ARCH}" != "arm64" ]; then travis_retry pip install gmpy2 pybind11; fi
   - |
-    if [ -z "${USE_DEBUG}" -a "${TRAVIS_CPU_ARCH}" == "amd64" -a "${TRAVIS_PYTHON_VERSION}" != "3.8" ]; then
+    if [ -z "${USE_DEBUG}" -a "${TRAVIS_CPU_ARCH}" != "arm64" -a "${TRAVIS_PYTHON_VERSION}" != "3.8" ]; then
         travis_retry pip install numba==0.47
         travis_retry pip install --only-binary=:all: sparse
     fi
   - |
-    if [ "${TESTMODE}" == "full" -a "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
+    if [ "${TESTMODE}" == "full" -a "${TRAVIS_CPU_ARCH}" != "arm64" ]; then
         travis_retry pip install pytest-cov coverage matplotlib scikit-umfpack scikit-sparse
     fi
   - |
@@ -231,7 +231,7 @@ before_install:
     if [ "${ASV_CHECK}" == "1" ]; then
         travis_retry pip install "asv>=0.4.1"
     fi
-  - if [ "${TRAVIS_CPU_ARCH}" == "amd64" ]
+  - if [ "${TRAVIS_CPU_ARCH}" != "arm64" ]
          pip uninstall -y nose
          ccache -s
     fi
@@ -255,7 +255,7 @@ script:
   # Test that mpmath actually uses gmpy2
   - if [ -n "$TRAVIS_OS_NAME" == "linux" -a "$TRAVIS_CPU_ARCH" == "amd64"]; then python -c 'import mpmath.libmp; assert mpmath.libmp.BACKEND == "gmpy"'; fi
   - |
-    if [ "${USE_WHEEL}" == "1" -a "${TRAVIS_CPU_ARCH}" == "amd64" ]; then
+    if [ "${USE_WHEEL}" == "1" -a "${TRAVIS_CPU_ARCH}" != "arm64" ]; then
         # Run setup.py build before pip wheel, to build in current directory
         # and make more efficient use of ccache
         echo "setup.py build"
@@ -264,7 +264,7 @@ script:
         python tools/suppress_output.py pip wheel --no-build-isolation .
         pip install --no-cache-dir scipy*.whl
         USE_WHEEL_BUILD="--no-build"
-    elif [ "${USE_SDIST}" == "1" -a "${TRAVIS_CPU_ARCH}" == "amd64"  ]; then
+    elif [ "${USE_SDIST}" == "1" -a "${TRAVIS_CPU_ARCH}" != "arm64"  ]; then
         echo "setup.py sdist"
         python tools/suppress_output.py python setup.py sdist
         # Move out of source directory to avoid finding local scipy
@@ -278,11 +278,11 @@ script:
         cd ..
         USE_WHEEL_BUILD="--no-build"
     fi
-  - if [[ "$TRAVIS_CPU_ARCH" == "amd64" ]]; then
+  - if [[ "$TRAVIS_CPU_ARCH" == "arm64" ]]; then
+      python -u runtests.py --parallel=4 | tee runtests.log
+    else
       export SCIPY_AVAILABLE_MEM=3G
       python -u runtests.py -g -m $TESTMODE $COVERAGE $USE_WHEEL_BUILD -- -rfEX -n 3 2>&1 | tee runtests.log
-    elif [[ "$TRAVIS_CPU_ARCH" == "arm64" ]]; then
-      python -u runtests.py --parallel=3 | tee runtests.log
     fi
   - tools/validate_runtests_log.py $TESTMODE < runtests.log
   - if [ "${REFGUIDE_CHECK}" == "1" ]; then python runtests.py -g --refguide-check; fi

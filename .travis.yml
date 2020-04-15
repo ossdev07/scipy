@@ -206,7 +206,7 @@ before_install:
         travis_retry pip install cython
     fi
   - |
-    if [ -z "${NUMPYSPEC}" -a "${TRAVIS_CPU_ARCH}" != "arm64" ]; then 
+    if [ "${NUMPYSPEC}" && "${TRAVIS_CPU_ARCH}" != "arm64" ]; then 
         travis_retry pip install $NUMPYSPEC 
     fi
   - |

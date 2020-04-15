@@ -125,6 +125,7 @@ matrix:
         - TESTMODE=fast
         - COVERAGE=
         - NUMPYSPEC="--upgrade numpy --no-cache-dir"
+        - PIP_NO_CACHE_DIR=off
 cache:
   directories:
     - $HOME/.ccache
